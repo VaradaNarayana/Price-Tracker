@@ -10,9 +10,23 @@ HEADERS = {
 def get_price(url):
     r = requests.get(url, headers=HEADERS)
     soup = BeautifulSoup(r.content, "html.parser")
-    title = soup.find("span", {"class": "B_NuCI"}).text.strip()
-    price = soup.find("div", {"class": "_30jeq3 _16Jk6d"}).text.strip()
+
+    # Safely find product title
+    title_tag = soup.find("span", {"class": "B_NuCI"})
+    if title_tag:
+        title = title_tag.text.strip()
+    else:
+        title = "❌ Title not found"
+
+    # Safely find product price
+    price_tag = soup.find("div", {"class": "_30jeq3 _16Jk6d"})
+    if price_tag:
+        price = price_tag.text.strip()
+    else:
+        price = "❌ Price not found"
+
     return title, price
+
 
 def send_whatsapp(product, price):
     client = Client(os.environ["TWILIO_ACCOUNT_SID"], os.environ["TWILIO_AUTH_TOKEN"])
