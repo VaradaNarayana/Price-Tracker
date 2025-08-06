@@ -1,0 +1,20 @@
+name: Daily Flipkart Price Tracker
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # Runs daily at 7:30am IST
+  workflow_dispatch:
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - run: pip install requests beautifulsoup4 twilio
+      - env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+        run: python tracker.py
